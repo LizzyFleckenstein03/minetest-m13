@@ -28,7 +28,6 @@ with this program; if not, write to the Free Software Foundation, Inc.,
 
 // Get a dependency-sorted list of ModSpecs
 core::list<ModSpec> getMods(core::list<std::string> &modspaths)
-		throw(ModError)
 {
 	std::queue<ModSpec> mods_satisfied;
 	core::list<ModSpec> mods_unsorted;

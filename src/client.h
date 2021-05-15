@@ -67,7 +67,7 @@ public:
 	MeshUpdateQueue();
 
 	~MeshUpdateQueue();
-	
+
 	/*
 		peer_id=0 adds with nobody to send to
 	*/
@@ -82,7 +82,7 @@ public:
 		JMutexAutoLock lock(m_mutex);
 		return m_queue.size();
 	}
-	
+
 private:
 	core::list<QueuedMeshUpdate*> m_queue;
 	JMutex m_mutex;
@@ -169,7 +169,7 @@ public:
 			IWritableItemDefManager *itemdef,
 			IWritableNodeDefManager *nodedef
 	);
-	
+
 	~Client();
 	/*
 		The name of the local player should already be set when
@@ -214,16 +214,16 @@ public:
 		const std::wstring newpassword);
 	void sendDamage(u8 damage);
 	void sendRespawn();
-	
+
 	// locks envlock
 	void removeNode(v3s16 p);
 	// locks envlock
 	void addNode(v3s16 p, MapNode n);
-	
+
 	void updateCamera(v3f pos, v3f dir, f32 fov);
-	
+
 	void renderPostFx();
-	
+
 	// Returns InvalidPositionException if not found
 	MapNode getNode(v3s16 p);
 	// Wrapper to Map
@@ -242,7 +242,7 @@ public:
 	bool getLocalInventoryUpdated();
 	// Copies the inventory of the local player to parameter
 	void getLocalInventory(Inventory &dst);
-	
+
 	/* InventoryManager interface */
 	Inventory* getInventory(const InventoryLocation &loc);
 	void inventoryAction(InventoryAction *a);
@@ -269,7 +269,7 @@ public:
 	{
 		try{
 			return m_con.GetPeerAvgRTT(PEER_ID_SERVER);
-		} catch(con::PeerNotFoundException){
+		} catch(con::PeerNotFoundException &){
 			return 1337;
 		}
 	}
@@ -306,7 +306,7 @@ public:
 
 	// Get event from queue. CE_NONE is returned if queue is empty.
 	ClientEvent getClientEvent();
-	
+
 	bool accessDenied()
 	{ return m_access_denied; }
 
@@ -322,7 +322,7 @@ public:
 	{ return m_itemdef_received; }
 	bool nodedefReceived()
 	{ return m_nodedef_received; }
-	
+
 	void afterContentReceived();
 
 	float getRTT(void);
@@ -335,20 +335,20 @@ public:
 	virtual u16 allocateUnknownNodeId(const std::string &name);
 
 private:
-	
+
 	// Virtual methods from con::PeerHandler
 	void peerAdded(con::Peer *peer);
 	void deletingPeer(con::Peer *peer, bool timeout);
-	
+
 	void ReceiveAll();
 	void Receive();
-	
+
 	void sendPlayerPos();
 	// This sends the player's current name etc to the server
 	void sendPlayerInfo();
 	// Send the item number 'item' as player item to the server
 	void sendPlayerItem(u16 item);
-	
+
 	float m_packetcounter_timer;
 	float m_connection_reinit_timer;
 	float m_avg_rtt_timer;

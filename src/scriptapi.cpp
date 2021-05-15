@@ -139,14 +139,14 @@ static Server* get_server(lua_State *L)
 	return server;
 }
 
-static ServerEnvironment* get_env(lua_State *L)
+/*static ServerEnvironment* get_env(lua_State *L)
 {
 	// Get environment from registry
 	lua_getfield(L, LUA_REGISTRYINDEX, "minetest_env");
 	ServerEnvironment *env = (ServerEnvironment*)lua_touserdata(L, -1);
 	lua_pop(L, 1);
 	return env;
-}
+}*/
 
 static void objectref_get(lua_State *L, u16 id)
 {
@@ -871,7 +871,7 @@ static ContentFeatures read_content_features(lua_State *L, int index)
 	f.alpha = getintfield_default(L, index, "alpha", 255);
 
 	/* Other stuff */
-	
+
 	lua_getfield(L, index, "post_effect_color");
 	if(!lua_isnil(L, -1))
 		f.post_effect_color = readARGB8(L, -1);
@@ -893,7 +893,7 @@ static ContentFeatures read_content_features(lua_State *L, int index)
 			"deprecated: use 'drop' field");
 	warn_if_field_exists(L, index, "extra_dug_item_rarity",
 			"deprecated: use 'drop' field");
-	
+
 	// True for all ground-like things like stone and mud, false for eg. trees
 	getboolfield(L, index, "is_ground_content", f.is_ground_content);
 	f.light_propagates = (f.param_type == CPT_LIGHT);
@@ -930,7 +930,7 @@ static ContentFeatures read_content_features(lua_State *L, int index)
 			"light_source", f.light_source);
 	f.damage_per_second = getintfield_default(L, index,
 			"damage_per_second", f.damage_per_second);
-	
+
 	lua_getfield(L, index, "selection_box");
 	if(lua_istable(L, -1)){
 		f.selection_box.type = (NodeBoxType)getenumfield(L, -1, "type",
@@ -1060,7 +1060,7 @@ private:
 	static const luaL_reg methods[];
 
 	// Exported functions
-	
+
 	// garbage collector
 	static int gc_object(lua_State *L)
 	{
@@ -1313,7 +1313,7 @@ public:
 	{
 		return m_stack;
 	}
-	
+
 	// LuaItemStack(itemstack or itemstring or table or nil)
 	// Creates an LuaItemStack and leaves it on top of stack
 	static int create_object(lua_State *L)
@@ -1463,7 +1463,7 @@ private:
 		if(!ud) luaL_typerror(L, narg, className);
 		return *(InvRef**)ud;  // unbox pointer
 	}
-	
+
 	static Inventory* getinv(lua_State *L, InvRef *ref)
 	{
 		return get_server(L)->getInventory(ref->m_loc);
@@ -1483,9 +1483,9 @@ private:
 		// Inform other things that the inventory has changed
 		get_server(L)->setInventoryModified(ref->m_loc);
 	}
-	
+
 	// Exported functions
-	
+
 	// garbage collector
 	static int gc_object(lua_State *L) {
 		InvRef *o = *(InvRef **)(lua_touserdata(L, 1));
@@ -1752,7 +1752,7 @@ private:
 		if(!ud) luaL_typerror(L, narg, className);
 		return *(NodeMetaRef**)ud;  // unbox pointer
 	}
-	
+
 	static NodeMetadata* getmeta(NodeMetaRef *ref)
 	{
 		NodeMetadata *meta = ref->m_env->getMap().getNodeMetadata(ref->m_p);
@@ -1783,9 +1783,9 @@ private:
 			block->raiseModified(MOD_STATE_WRITE_NEEDED,
 					"NodeMetaRef::reportMetadataChange");
 	}
-	
+
 	// Exported functions
-	
+
 	// garbage collector
 	static int gc_object(lua_State *L) {
 		NodeMetaRef *o = *(NodeMetaRef **)(lua_touserdata(L, 1));
@@ -1883,7 +1883,7 @@ private:
 	}
 
 	/* IGenericNodeMetadata interface */
-	
+
 	// set_infotext(self, text)
 	static int l_set_infotext(lua_State *L)
 	{
@@ -2128,13 +2128,13 @@ private:
 		if(!ud) luaL_typerror(L, narg, className);
 		return *(ObjectRef**)ud;  // unbox pointer
 	}
-	
+
 	static ServerActiveObject* getobject(ObjectRef *ref)
 	{
 		ServerActiveObject *co = ref->m_object;
 		return co;
 	}
-	
+
 	static LuaEntitySAO* getluaobject(ObjectRef *ref)
 	{
 		ServerActiveObject *obj = getobject(ref);
@@ -2144,7 +2144,7 @@ private:
 			return NULL;
 		return (LuaEntitySAO*)obj;
 	}
-	
+
 	static ServerRemotePlayer* getplayer(ObjectRef *ref)
 	{
 		ServerActiveObject *obj = getobject(ref);
@@ -2154,9 +2154,9 @@ private:
 			return NULL;
 		return static_cast<ServerRemotePlayer*>(obj);
 	}
-	
+
 	// Exported functions
-	
+
 	// garbage collector
 	static int gc_object(lua_State *L) {
 		ObjectRef *o = *(ObjectRef **)(lua_touserdata(L, 1));
@@ -2175,7 +2175,7 @@ private:
 		co->m_removed = true;
 		return 0;
 	}
-	
+
 	// getpos(self)
 	// returns: {x=num, y=num, z=num}
 	static int l_getpos(lua_State *L)
@@ -2193,7 +2193,7 @@ private:
 		lua_setfield(L, -2, "z");
 		return 1;
 	}
-	
+
 	// setpos(self, pos)
 	static int l_setpos(lua_State *L)
 	{
@@ -2211,7 +2211,7 @@ private:
 			get_server(L)->SendMovePlayer(player);
 		return 0;
 	}
-	
+
 	// moveto(self, pos, continuous=false)
 	static int l_moveto(lua_State *L)
 	{
@@ -2365,7 +2365,7 @@ private:
 		co->setVelocity(pos);
 		return 0;
 	}
-	
+
 	// getvelocity(self)
 	static int l_getvelocity(lua_State *L)
 	{
@@ -2377,7 +2377,7 @@ private:
 		pushFloatPos(L, v);
 		return 1;
 	}
-	
+
 	// setacceleration(self, {x=num, y=num, z=num})
 	static int l_setacceleration(lua_State *L)
 	{
@@ -2390,7 +2390,7 @@ private:
 		co->setAcceleration(pos);
 		return 0;
 	}
-	
+
 	// getacceleration(self)
 	static int l_getacceleration(lua_State *L)
 	{
@@ -2402,7 +2402,7 @@ private:
 		pushFloatPos(L, v);
 		return 1;
 	}
-	
+
 	// setyaw(self, radians)
 	static int l_setyaw(lua_State *L)
 	{
@@ -2415,7 +2415,7 @@ private:
 		co->setYaw(yaw);
 		return 0;
 	}
-	
+
 	// getyaw(self)
 	static int l_getyaw(lua_State *L)
 	{
@@ -2427,7 +2427,7 @@ private:
 		lua_pushnumber(L, yaw);
 		return 1;
 	}
-	
+
 	// settexturemod(self, mod)
 	static int l_settexturemod(lua_State *L)
 	{
@@ -2439,7 +2439,7 @@ private:
 		co->setTextureMod(mod);
 		return 0;
 	}
-	
+
 	// setsprite(self, p={x=0,y=0}, num_frames=1, framelength=0.2,
 	//           select_horiz_by_yawpitch=false)
 	static int l_setsprite(lua_State *L)
@@ -2476,7 +2476,7 @@ private:
 		lua_pushstring(L, name.c_str());
 		return 1;
 	}
-	
+
 	// get_luaentity(self)
 	static int l_get_luaentity(lua_State *L)
 	{
@@ -2487,9 +2487,9 @@ private:
 		luaentity_get(L, co->getId());
 		return 1;
 	}
-	
+
 	/* Player-only */
-	
+
 	// get_player_name(self)
 	static int l_get_player_name(lua_State *L)
 	{
@@ -2503,7 +2503,7 @@ private:
 		lua_pushstring(L, player->getName());
 		return 1;
 	}
-	
+
 	// get_look_dir(self)
 	static int l_get_look_dir(lua_State *L)
 	{
@@ -2572,7 +2572,7 @@ public:
 		ObjectRef *o = checkobject(L, -1);
 		o->m_object = NULL;
 	}
-	
+
 	static void Register(lua_State *L)
 	{
 		lua_newtable(L);
@@ -2666,7 +2666,7 @@ private:
 		if(!ud) luaL_typerror(L, narg, className);
 		return *(EnvRef**)ud;  // unbox pointer
 	}
-	
+
 	// Exported functions
 
 	// EnvRef:add_node(pos, node)
@@ -2947,7 +2947,7 @@ public:
 		EnvRef *o = checkobject(L, -1);
 		o->m_env = NULL;
 	}
-	
+
 	static void Register(lua_State *L)
 	{
 		lua_newtable(L);
@@ -3040,7 +3040,7 @@ public:
 			u32 active_object_count, u32 active_object_count_wider)
 	{
 		lua_State *L = m_lua;
-	
+
 		realitycheck(L);
 		assert(lua_checkstack(L, 20));
 		StackUnroller stack_unroller(L);
@@ -3056,7 +3056,7 @@ public:
 		lua_gettable(L, registered_abms);
 		if(lua_isnil(L, -1))
 			assert(0);
-		
+
 		// Call action
 		luaL_checktype(L, -1, LUA_TTABLE);
 		lua_getfield(L, -1, "action");
@@ -3152,9 +3152,9 @@ static int l_register_alias_raw(lua_State *L)
 	// Get the writable item definition manager from the server
 	IWritableItemDefManager *idef =
 			get_server(L)->getWritableItemDefManager();
-	
+
 	idef->registerAlias(name, convert_to);
-	
+
 	return 0; /* number of results */
 }
 
@@ -3263,7 +3263,7 @@ static int l_register_craft(lua_State *L)
 	// Get the writable craft definition manager from the server
 	IWritableCraftDefManager *craftdef =
 			get_server(L)->getWritableCraftDefManager();
-	
+
 	std::string type = getstringfield_default(L, table, "type", "shaped");
 
 	/*
@@ -3471,7 +3471,7 @@ static int l_get_inventory(lua_State *L)
 		v3s16 pos = check_v3s16(L, -1);
 		loc.setNodeMeta(pos);
 	}
-	
+
 	if(get_server(L)->getInventory(loc) != NULL)
 		InvRef::create(L, loc);
 	else
@@ -3564,12 +3564,12 @@ void scriptapi_export(lua_State *L, Server *server)
 	lua_newtable(L);
 	luaL_register(L, NULL, minetest_f);
 	lua_setglobal(L, "minetest");
-	
+
 	// Get the main minetest table
 	lua_getglobal(L, "minetest");
 
 	// Add tables to minetest
-	
+
 	lua_newtable(L);
 	lua_setfield(L, -2, "object_refs");
 	lua_newtable(L);
@@ -3595,7 +3595,7 @@ bool scriptapi_loadmod(lua_State *L, const std::string &scriptpath,
 				<<"Only chararacters [a-z0-9_] are allowed."<<std::endl;
 		return false;
 	}
-	
+
 	bool success = false;
 
 	try{
@@ -3639,7 +3639,7 @@ void scriptapi_add_environment(lua_State *L, ServerEnvironment *env)
 	lua_getfield(L, -1, "registered_abms");
 	luaL_checktype(L, -1, LUA_TTABLE);
 	int registered_abms = lua_gettop(L);
-	
+
 	if(lua_istable(L, registered_abms)){
 		int table = lua_gettop(L);
 		lua_pushnil(L);
@@ -3690,7 +3690,7 @@ void scriptapi_add_environment(lua_State *L, ServerEnvironment *env)
 
 			LuaABM *abm = new LuaABM(L, id, trigger_contents,
 					required_neighbors, trigger_interval, trigger_chance);
-			
+
 			env->addActiveBlockModifier(abm);
 
 			// removes value, keeps key for next iteration
@@ -3734,7 +3734,7 @@ void scriptapi_add_object_reference(lua_State *L, ServerActiveObject *cobj)
 	lua_getfield(L, -1, "object_refs");
 	luaL_checktype(L, -1, LUA_TTABLE);
 	int objectstable = lua_gettop(L);
-	
+
 	// object_refs[id] = object
 	lua_pushnumber(L, cobj->getId()); // Push id
 	lua_pushvalue(L, object); // Copy object to top of stack
@@ -3753,7 +3753,7 @@ void scriptapi_rm_object_reference(lua_State *L, ServerActiveObject *cobj)
 	lua_getfield(L, -1, "object_refs");
 	luaL_checktype(L, -1, LUA_TTABLE);
 	int objectstable = lua_gettop(L);
-	
+
 	// Get object_refs[id]
 	lua_pushnumber(L, cobj->getId()); // Push id
 	lua_gettable(L, objectstable);
@@ -3831,7 +3831,7 @@ void scriptapi_on_dieplayer(lua_State *L, ServerActiveObject *player)
     realitycheck(L);
     assert(lua_checkstack(L, 20));
     StackUnroller stack_unroller(L);
-    
+
     // Get minetest.registered_on_dieplayers
     lua_getglobal(L, "minetest");
     lua_getfield(L, -1, "registered_on_dieplayers");
@@ -4115,7 +4115,7 @@ bool scriptapi_luaentity_add(lua_State *L, u16 id, const char *name,
 	infostream<<"scriptapi_luaentity_add: id="<<id<<" name=\""
 			<<name<<"\""<<std::endl;
 	StackUnroller stack_unroller(L);
-	
+
 	// Get minetest.registered_entities[name]
 	lua_getglobal(L, "minetest");
 	lua_getfield(L, -1, "registered_entities");
@@ -4130,7 +4130,7 @@ bool scriptapi_luaentity_add(lua_State *L, u16 id, const char *name,
 	}
 	int prototype_table = lua_gettop(L);
 	//dump2(L, "prototype_table");
-	
+
 	// Create entity object
 	lua_newtable(L);
 	int object = lua_gettop(L);
@@ -4138,7 +4138,7 @@ bool scriptapi_luaentity_add(lua_State *L, u16 id, const char *name,
 	// Set object metatable
 	lua_pushvalue(L, prototype_table);
 	lua_setmetatable(L, -2);
-	
+
 	// Add object reference
 	// This should be userdata with metatable ObjectRef
 	objectref_get(L, id);
@@ -4154,7 +4154,7 @@ bool scriptapi_luaentity_add(lua_State *L, u16 id, const char *name,
 	lua_pushnumber(L, id); // Push id
 	lua_pushvalue(L, object); // Copy object to top of stack
 	lua_settable(L, -3);
-	
+
 	// Get on_activate function
 	lua_pushvalue(L, object);
 	lua_getfield(L, -1, "on_activate");
@@ -4167,7 +4167,7 @@ bool scriptapi_luaentity_add(lua_State *L, u16 id, const char *name,
 			script_error(L, "error running function %s:on_activate: %s\n",
 					name, lua_tostring(L, -1));
 	}
-	
+
 	return true;
 }
 
@@ -4182,12 +4182,12 @@ void scriptapi_luaentity_rm(lua_State *L, u16 id)
 	lua_getfield(L, -1, "luaentities");
 	luaL_checktype(L, -1, LUA_TTABLE);
 	int objectstable = lua_gettop(L);
-	
+
 	// Set luaentities[id] = nil
 	lua_pushnumber(L, id); // Push id
 	lua_pushnil(L);
 	lua_settable(L, objectstable);
-	
+
 	lua_pop(L, 2); // pop luaentities, minetest
 }
 
@@ -4201,20 +4201,20 @@ std::string scriptapi_luaentity_get_staticdata(lua_State *L, u16 id)
 	// Get minetest.luaentities[id]
 	luaentity_get(L, id);
 	int object = lua_gettop(L);
-	
+
 	// Get get_staticdata function
 	lua_pushvalue(L, object);
 	lua_getfield(L, -1, "get_staticdata");
 	if(lua_isnil(L, -1))
 		return "";
-	
+
 	luaL_checktype(L, -1, LUA_TFUNCTION);
 	lua_pushvalue(L, object); // self
 	// Call with 1 arguments, 1 results
 	if(lua_pcall(L, 1, 1, 0))
 		script_error(L, "error running function get_staticdata: %s\n",
 				lua_tostring(L, -1));
-	
+
 	size_t len=0;
 	const char *s = lua_tolstring(L, -1, &len);
 	return std::string(s, len);
@@ -4233,7 +4233,7 @@ void scriptapi_luaentity_get_properties(lua_State *L, u16 id,
 	//int object = lua_gettop(L);
 
 	/* Read stuff */
-	
+
 	getboolfield(L, -1, "physical", prop->physical);
 
 	getfloatfield(L, -1, "weight", prop->weight);
@@ -4244,7 +4244,7 @@ void scriptapi_luaentity_get_properties(lua_State *L, u16 id,
 	lua_pop(L, 1);
 
 	getstringfield(L, -1, "visual", prop->visual);
-	
+
 	lua_getfield(L, -1, "visual_size");
 	if(lua_istable(L, -1))
 		prop->visual_size = read_v2f(L, -1);
@@ -4266,7 +4266,7 @@ void scriptapi_luaentity_get_properties(lua_State *L, u16 id,
 		}
 	}
 	lua_pop(L, 1);
-	
+
 	lua_getfield(L, -1, "spritediv");
 	if(lua_istable(L, -1))
 		prop->spritediv = read_v2s16(L, -1);

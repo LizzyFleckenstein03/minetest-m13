@@ -54,14 +54,14 @@ void cmd_privs(std::wostringstream &os,
 		os<<L"-!- You don't have permission to do that";
 		return;
 	}
-		
+
 	Player *tp = ctx->env->getPlayer(wide_to_narrow(ctx->parms[1]).c_str());
 	if(tp == NULL)
 	{
 		os<<L"-!- No such player";
 		return;
 	}
-	
+
 	os<<L"-!- " + narrow_to_wide(privsToString(ctx->server->getPlayerAuthPrivs(tp->getName())));
 }
 
@@ -93,7 +93,7 @@ void cmd_grantrevoke(std::wostringstream &os,
 		os<<L"-!- No such player";
 		return;
 	}
-	
+
 	std::string playername = wide_to_narrow(ctx->parms[1]);
 	u64 privs = ctx->server->getPlayerAuthPrivs(playername);
 
@@ -122,9 +122,9 @@ void cmd_grantrevoke(std::wostringstream &os,
 		msg += L"\"";
 		ctx->server->notifyPlayer(playername.c_str(), msg);
 	}
-	
+
 	ctx->server->setPlayerAuthPrivs(playername, privs);
-	
+
 	os<<L"-!- Privileges change to ";
 	os<<narrow_to_wide(privsToString(privs));
 }
@@ -165,7 +165,7 @@ void cmd_shutdown(std::wostringstream &os,
 			<<" shuts down server"<<std::endl;
 
 	ctx->server->requestShutdown();
-					
+
 	os<<L"*** Server shutting down (operator request)";
 	ctx->flags |= SEND_TO_OTHERS;
 }
@@ -183,12 +183,12 @@ void cmd_setting(std::wostringstream &os,
 			ctx->parms[1] + L" = " + ctx->params[2]);*/
 
 	std::string confline = wide_to_narrow(ctx->paramstring);
-	
+
 	actionstream<<ctx->player->getName()
 			<<" sets: "<<confline<<std::endl;
 
 	g_settings->parseConfigLine(confline);
-	
+
 	ctx->server->saveConfig();
 
 	os<< L"-!- Setting changed and configuration saved.";
@@ -255,7 +255,7 @@ void cmd_banunban(std::wostringstream &os, ServerCommandContext *ctx)
 			os<<L"-!- No such player";
 			return;
 		}
-		
+
 		try{
 			Address address = ctx->server->getPeerAddress(player->peer_id);
 			std::string ip_string = address.serializeString();
@@ -265,7 +265,7 @@ void cmd_banunban(std::wostringstream &os, ServerCommandContext *ctx)
 
 			actionstream<<ctx->player->getName()<<" bans "
 					<<player->getName()<<" / "<<ip_string<<std::endl;
-		} catch(con::PeerNotFoundException){
+		} catch(con::PeerNotFoundException &){
 			dstream<<__FUNCTION_NAME<<": peer was not found"<<std::endl;
 		}
 	}
@@ -344,7 +344,7 @@ void cmd_clearobjects(std::wostringstream &os,
 
 	actionstream<<ctx->player->getName()
 			<<" clears all objects"<<std::endl;
-	
+
 	{
 		std::wstring msg;
 		msg += L"Clearing all objects. This may take long.";
@@ -355,9 +355,9 @@ void cmd_clearobjects(std::wostringstream &os,
 	}
 
 	ctx->env->clearAllObjects();
-					
+
 	actionstream<<"object clearing done"<<std::endl;
-	
+
 	os<<L"*** cleared all objects";
 	ctx->flags |= SEND_TO_OTHERS;
 }
@@ -412,7 +412,7 @@ std::wstring processServerCommand(ServerCommandContext *ctx)
 		cmd_clearobjects(os, ctx);
 	else
 		os<<L"-!- Invalid command: " + ctx->parms[0];
-	
+
 	return os.str();
 }
 

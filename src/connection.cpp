@@ -70,7 +70,7 @@ core::list<SharedBuffer<u8> > makeSplitPacket(
 {
 	// Chunk packets, containing the TYPE_SPLIT header
 	core::list<SharedBuffer<u8> > chunks;
-	
+
 	u32 chunk_header_size = 7;
 	u32 maximum_data_size = chunksize_max - chunk_header_size;
 	u32 start = 0;
@@ -80,12 +80,12 @@ core::list<SharedBuffer<u8> > makeSplitPacket(
 		end = start + maximum_data_size - 1;
 		if(end > data.getSize() - 1)
 			end = data.getSize() - 1;
-		
+
 		u32 payload_size = end - start + 1;
 		u32 packet_size = chunk_header_size + payload_size;
 
 		SharedBuffer<u8> chunk(packet_size);
-		
+
 		writeU8(&chunk[0], TYPE_SPLIT);
 		writeU16(&chunk[1], seqnum);
 		// [3] u16 chunk_count is written at next stage
@@ -93,7 +93,7 @@ core::list<SharedBuffer<u8> > makeSplitPacket(
 		memcpy(&chunk[chunk_header_size], &data[start], payload_size);
 
 		chunks.push_back(chunk);
-		
+
 		start = end + 1;
 		chunk_num++;
 	}
@@ -340,9 +340,9 @@ SharedBuffer<u8> IncomingSplitBuffer::insert(BufferedPacket &p, bool reliable)
 		sp->reliable = reliable;
 		m_buf[seqnum] = sp;
 	}
-	
+
 	IncomingSplitPacket *sp = m_buf[seqnum];
-	
+
 	// TODO: These errors should be thrown or something? Dunno.
 	if(chunk_count != sp->chunk_count)
 		derr_con<<"Connection: WARNING: chunk_count="<<chunk_count
@@ -356,15 +356,15 @@ SharedBuffer<u8> IncomingSplitBuffer::insert(BufferedPacket &p, bool reliable)
 	// If chunk already exists, cancel
 	if(sp->chunks.find(chunk_num) != NULL)
 		throw AlreadyExistsException("Chunk already in buffer");
-	
+
 	// Cut chunk data out of packet
 	u32 chunkdatasize = p.data.getSize() - headersize;
 	SharedBuffer<u8> chunkdata(chunkdatasize);
 	memcpy(*chunkdata, &(p.data[headersize]), chunkdatasize);
-	
+
 	// Set chunk data in buffer
 	sp->chunks[chunk_num] = chunkdata;
-	
+
 	// If not all chunks are received, return empty buffer
 	if(sp->allReceived() == false)
 		return SharedBuffer<u8>();
@@ -377,7 +377,7 @@ SharedBuffer<u8> IncomingSplitBuffer::insert(BufferedPacket &p, bool reliable)
 	{
 		totalsize += i.getNode()->getValue().getSize();
 	}
-	
+
 	SharedBuffer<u8> fulldata(totalsize);
 
 	// Copy chunks to data buffer
@@ -481,7 +481,7 @@ void Peer::reportRTT(float rtt)
 		avg_rtt = rtt;
 	else
 		avg_rtt = rtt * 0.1 + avg_rtt * 0.9;
-	
+
 	// Calculate resend_timeout
 
 	/*int reliable_count = 0;
@@ -491,7 +491,7 @@ void Peer::reportRTT(float rtt)
 	}
 	float timeout = avg_rtt * RESEND_TIMEOUT_FACTOR
 			* ((float)reliable_count * 1);*/
-	
+
 	float timeout = avg_rtt * RESEND_TIMEOUT_FACTOR;
 	if(timeout < RESEND_TIMEOUT_MIN)
 		timeout = RESEND_TIMEOUT_MIN;
@@ -499,7 +499,7 @@ void Peer::reportRTT(float rtt)
 		timeout = RESEND_TIMEOUT_MAX;
 	resend_timeout = timeout;
 }
-				
+
 /*
 	Connection
 */
@@ -547,14 +547,14 @@ void * Connection::Thread()
 	log_register_thread("Connection");
 
 	dout_con<<"Connection thread started"<<std::endl;
-	
+
 	u32 curtime = porting::getTimeMs();
 	u32 lasttime = curtime;
 
 	while(getRun())
 	{
 		BEGIN_DEBUG_EXCEPTION_HANDLER
-		
+
 		lasttime = curtime;
 		curtime = porting::getTimeMs();
 		float dtime = (float)(curtime - lasttime) / 1000.;
@@ -562,7 +562,7 @@ void * Connection::Thread()
 			dtime = 0.1;
 		if(dtime < 0.0)
 			dtime = 0.0;
-		
+
 		runTimeouts(dtime);
 
 		while(m_command_queue.size() != 0){
@@ -573,7 +573,7 @@ void * Connection::Thread()
 		send(dtime);
 
 		receive();
-		
+
 		END_DEBUG_EXCEPTION_HANDLER(derr_con);
 	}
 
@@ -673,7 +673,7 @@ void Connection::receive()
 	SharedBuffer<u8> packetdata(packet_maxsize);
 
 	bool single_wait_done = false;
-	
+
 	for(;;)
 	{
 	try{
@@ -689,12 +689,12 @@ void Connection::receive()
 				continue;
 			}
 		}
-		
+
 		if(single_wait_done){
 			if(m_socket.WaitData(0) == false)
 				break;
 		}
-		
+
 		single_wait_done = true;
 
 		Address sender;
@@ -706,7 +706,7 @@ void Connection::receive()
 			continue;
 		if(readU32(&packetdata[0]) != m_protocol_id)
 			continue;
-		
+
 		u16 peer_id = readPeerId(*packetdata);
 		u8 channelnum = readChannel(*packetdata);
 		if(channelnum > CHANNEL_COUNT-1){
@@ -719,7 +719,7 @@ void Connection::receive()
 		{
 			/*
 				Somebody is trying to send stuff to us with no peer id.
-				
+
 				Check if the same address and port was added to our peer
 				list before.
 				Allow only entries that have has_sent_with_id==false.
@@ -735,7 +735,7 @@ void Connection::receive()
 				if(peer->address == sender)
 					break;
 			}
-			
+
 			/*
 				If no peer was found with the same address and port,
 				we shall assume it is a new peer and create an entry.
@@ -754,7 +754,7 @@ void Connection::receive()
 						<<"peer_id="<<peer_id<<std::endl;
 			}
 		}
-		
+
 		/*
 			The peer was not found in our lists. Add it.
 		*/
@@ -792,19 +792,19 @@ void Connection::receive()
 			// Create a peer
 			Peer *peer = new Peer(peer_id_new, sender);
 			m_peers.insert(peer->id, peer);
-			
+
 			// Create peer addition event
 			ConnectionEvent e;
 			e.peerAdded(peer_id_new, sender);
 			putEvent(e);
-			
+
 			// Create CONTROL packet to tell the peer id to the new peer.
 			SharedBuffer<u8> reply(4);
 			writeU8(&reply[0], TYPE_CONTROL);
 			writeU8(&reply[1], CONTROLTYPE_SET_PEER_ID);
 			writeU16(&reply[2], peer_id_new);
 			sendAsPacket(peer_id_new, 0, reply, true);
-			
+
 			// We're now talking to a valid peer_id
 			peer_id = peer_id_new;
 
@@ -833,27 +833,27 @@ void Connection::receive()
 					" Ignoring."<<std::endl;
 			continue;
 		}
-		
+
 		peer->timeout_counter = 0.0;
 
 		Channel *channel = &(peer->channels[channelnum]);
-		
+
 		// Throw the received packet to channel->processPacket()
 
 		// Make a new SharedBuffer from the data without the base headers
 		SharedBuffer<u8> strippeddata(received_size - BASE_HEADER_SIZE);
 		memcpy(*strippeddata, &packetdata[BASE_HEADER_SIZE],
 				strippeddata.getSize());
-		
+
 		try{
 			// Process it (the result is some data with no headers made by us)
 			SharedBuffer<u8> resultdata = processPacket
 					(channel, strippeddata, peer_id, channelnum, false);
-			
+
 			PrintInfo();
 			dout_con<<"ProcessPacket returned data of size "
 					<<resultdata.getSize()<<std::endl;
-			
+
 			ConnectionEvent e;
 			e.dataReceived(peer_id, resultdata);
 			putEvent(e);
@@ -875,7 +875,7 @@ void Connection::runTimeouts(float dtime)
 	for(; j.atEnd() == false; j++)
 	{
 		Peer *peer = j.getNode()->getValue();
-		
+
 		/*
 			Check peer timeout
 		*/
@@ -898,12 +898,12 @@ void Connection::runTimeouts(float dtime)
 		{
 			core::list<BufferedPacket> timed_outs;
 			core::list<BufferedPacket>::Iterator j;
-			
+
 			Channel *channel = &peer->channels[i];
 
 			// Remove timed out incomplete unreliable split packets
 			channel->incoming_splits.removeUnreliableTimedOuts(dtime, m_timeout);
-			
+
 			// Increment reliable packet times
 			channel->outgoing_reliables.incrementTimeouts(dtime);
 
@@ -922,7 +922,7 @@ void Connection::runTimeouts(float dtime)
 			}
 
 			// Re-send timed out outgoing reliables
-			
+
 			timed_outs = channel->
 					outgoing_reliables.getTimedOuts(resend_timeout);
 
@@ -953,7 +953,7 @@ void Connection::runTimeouts(float dtime)
 				peer->reportRTT(resend_timeout);
 			}
 		}
-		
+
 		/*
 			Send pings
 		*/
@@ -968,7 +968,7 @@ void Connection::runTimeouts(float dtime)
 
 			peer->ping_timer = 0.0;
 		}
-		
+
 nextpeer:
 		continue;
 	}
@@ -1007,9 +1007,9 @@ void Connection::connect(Address address)
 	ConnectionEvent e;
 	e.peerAdded(peer->id, peer->address);
 	putEvent(e);
-	
+
 	m_socket.Bind(0);
-	
+
 	// Send a dummy packet to server with peer_id = PEER_ID_INEXISTENT
 	m_peer_id = PEER_ID_INEXISTENT;
 	SharedBuffer<u8> data(0);
@@ -1024,7 +1024,7 @@ void Connection::disconnect()
 	SharedBuffer<u8> data(2);
 	writeU8(&data[0], TYPE_CONTROL);
 	writeU8(&data[1], CONTROLTYPE_DISCO);
-	
+
 	// Send to all
 	core::map<u16, Peer*>::Iterator j;
 	j = m_peers.getIterator();
@@ -1052,7 +1052,7 @@ void Connection::send(u16 peer_id, u8 channelnum,
 	dout_con<<getDesc()<<" sending to peer_id="<<peer_id<<std::endl;
 
 	assert(channelnum < CHANNEL_COUNT);
-	
+
 	Peer *peer = getPeerNoEx(peer_id);
 	if(peer == NULL)
 		return;
@@ -1065,13 +1065,13 @@ void Connection::send(u16 peer_id, u8 channelnum,
 	core::list<SharedBuffer<u8> > originals;
 	originals = makeAutoSplitPacket(data, chunksize_max,
 			channel->next_outgoing_split_seqnum);
-	
+
 	core::list<SharedBuffer<u8> >::Iterator i;
 	i = originals.begin();
 	for(; i != originals.end(); i++)
 	{
 		SharedBuffer<u8> original = *i;
-		
+
 		sendAsPacket(peer_id, channelnum, original, reliable);
 	}
 }
@@ -1101,7 +1101,7 @@ void Connection::rawSendAsPacket(u16 peer_id, u8 channelnum,
 		// Add base headers and make a packet
 		BufferedPacket p = makePacket(peer->address, reliable,
 				m_protocol_id, m_peer_id, channelnum);
-		
+
 		try{
 			// Buffer the packet
 			channel->outgoing_reliables.insert(p);
@@ -1114,7 +1114,7 @@ void Connection::rawSendAsPacket(u16 peer_id, u8 channelnum,
 					"in outgoing buffer"<<std::endl;
 			//assert(0);
 		}
-		
+
 		// Send the packet
 		rawSend(p);
 	}
@@ -1215,15 +1215,15 @@ bool Connection::checkIncomingBuffers(Channel *channel, u16 &peer_id,
 			break;
 	}
 	// This happens if all packets are old
-	}catch(con::NotFoundException)
+	}catch(con::NotFoundException &)
 	{}
-	
+
 	if(channel->incoming_reliables.empty() == false)
 	{
 		if(firstseqnum == channel->next_incoming_seqnum)
 		{
 			BufferedPacket p = channel->incoming_reliables.popFirst();
-			
+
 			peer_id = readPeerId(*p.data);
 			u8 channelnum = readChannel(*p.data);
 			u16 seqnum = readU16(&p.data[BASE_HEADER_SIZE+1]);
@@ -1236,7 +1236,7 @@ bool Connection::checkIncomingBuffers(Channel *channel, u16 &peer_id,
 					<<std::endl;
 
 			channel->next_incoming_seqnum++;
-			
+
 			u32 headers_size = BASE_HEADER_SIZE + RELIABLE_HEADER_SIZE;
 			// Get out the inside packet and re-process it
 			SharedBuffer<u8> payload(p.data.getSize() - headers_size);
@@ -1259,7 +1259,7 @@ SharedBuffer<u8> Connection::processPacket(Channel *channel,
 		throw InvalidIncomingDataException("packetdata.getSize() < 1");
 
 	u8 type = readU8(&packetdata[0]);
-	
+
 	if(type == TYPE_CONTROL)
 	{
 		if(packetdata.getSize() < 2)
@@ -1342,7 +1342,7 @@ SharedBuffer<u8> Connection::processPacket(Channel *channel,
 			// the timeout counter
 			PrintInfo();
 			dout_con<<"DISCO: Removing peer "<<(peer_id)<<std::endl;
-			
+
 			if(deletePeer(peer_id, false) == false)
 			{
 				PrintInfo(derr_con);
@@ -1407,7 +1407,7 @@ SharedBuffer<u8> Connection::processPacket(Channel *channel,
 
 		bool is_future_packet = seqnum_higher(seqnum, channel->next_incoming_seqnum);
 		bool is_old_packet = seqnum_higher(channel->next_incoming_seqnum, seqnum);
-		
+
 		PrintInfo();
 		if(is_future_packet)
 			dout_con<<"BUFFERING";
@@ -1420,7 +1420,7 @@ SharedBuffer<u8> Connection::processPacket(Channel *channel,
 		dout_con<<" [sending CONTROLTYPE_ACK"
 				" to peer_id="<<peer_id<<"]";
 		dout_con<<std::endl;
-		
+
 		//DEBUG
 		//assert(channel->incoming_reliables.size() < 100);
 
@@ -1437,7 +1437,7 @@ SharedBuffer<u8> Connection::processPacket(Channel *channel,
 			/*PrintInfo();
 			dout_con<<"Buffering reliable packet (seqnum="
 					<<seqnum<<")"<<std::endl;*/
-			
+
 			// This one comes later, buffer it.
 			// Actually we have to make a packet to buffer one.
 			// Well, we have all the ingredients, so just do it.
@@ -1449,7 +1449,7 @@ SharedBuffer<u8> Connection::processPacket(Channel *channel,
 					channelnum);
 			try{
 				channel->incoming_reliables.insert(packet);
-				
+
 				/*PrintInfo();
 				dout_con<<"INCOMING: ";
 				channel->incoming_reliables.print();
@@ -1482,7 +1482,7 @@ SharedBuffer<u8> Connection::processPacket(Channel *channel,
 		derr_con<<"Got invalid type="<<((int)type&0xff)<<std::endl;
 		throw InvalidIncomingDataException("Invalid packet type");
 	}
-	
+
 	// We should never get here.
 	// If you get here, add an exception or a return to some of the
 	// above conditionals.
@@ -1494,7 +1494,7 @@ bool Connection::deletePeer(u16 peer_id, bool timeout)
 {
 	if(m_peers.find(peer_id) == NULL)
 		return false;
-	
+
 	Peer *peer = m_peers[peer_id];
 
 	// Create event
@@ -1555,14 +1555,14 @@ bool Connection::Connected()
 
 	if(m_peers.size() != 1)
 		return false;
-		
+
 	core::map<u16, Peer*>::Node *node = m_peers.find(PEER_ID_SERVER);
 	if(node == NULL)
 		return false;
-	
+
 	if(m_peer_id == PEER_ID_INEXISTENT)
 		return false;
-	
+
 	return true;
 }
 

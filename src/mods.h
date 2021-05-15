@@ -59,8 +59,7 @@ struct ModSpec
 };
 
 // Get a dependency-sorted list of ModSpecs
-core::list<ModSpec> getMods(core::list<std::string> &modspaths)
-		throw(ModError);
+core::list<ModSpec> getMods(core::list<std::string> &modspaths);
 
 #endif
 
