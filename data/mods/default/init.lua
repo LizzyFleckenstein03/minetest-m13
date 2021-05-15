@@ -78,7 +78,7 @@
 -- eg. 'craft "default:apple" 2'
 --
 -- item: A stack of items in Lua table format.
--- eg. {name="default:dirt", count=1, wear=0, metadata=""} 
+-- eg. {name="default:dirt", count=1, wear=0, metadata=""}
 --     ^ a single dirt node
 -- eg. {name="default:pick_wood", count=1, wear=21323, metadata=""}
 --     ^ a wooden pick about 1/3 weared out
@@ -664,6 +664,7 @@ minetest.register_craft({
 minetest.register_craft({
 	output = 'default:stick 4',
 	recipe = {
+		{'default:wood'},
 		{'default:wood'},
 	}
 })
