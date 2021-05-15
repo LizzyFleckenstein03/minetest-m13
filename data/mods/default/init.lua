@@ -830,15 +830,6 @@ minetest.register_craft({
 })
 
 minetest.register_craft({
-	output = 'default:chest_locked',
-	recipe = {
-		{'default:wood', 'default:wood', 'default:wood'},
-		{'default:wood', 'default:steel_ingot', 'default:wood'},
-		{'default:wood', 'default:wood', 'default:wood'},
-	}
-})
-
-minetest.register_craft({
 	output = 'default:furnace',
 	recipe = {
 		{'default:cobble', 'default:cobble', 'default:cobble'},
@@ -1054,24 +1045,6 @@ minetest.register_craft({
 	type = "fuel",
 	recipe = "default:chest",
 	burntime = 30,
-})
-
-minetest.register_craft({
-	type = "fuel",
-	recipe = "default:chest_locked",
-	burntime = 30,
-})
-
-minetest.register_craft({
-	type = "fuel",
-	recipe = "default:nyancat",
-	burntime = 1,
-})
-
-minetest.register_craft({
-	type = "fuel",
-	recipe = "default:nyancat_rainbow",
-	burntime = 1,
 })
 
 minetest.register_craft({
@@ -1483,16 +1456,6 @@ minetest.register_node("default:chest", {
 	legacy_facedir_simple = true,
 })
 
-minetest.register_node("default:chest_locked", {
-	description = "Locked Chest",
-	tile_images = {"default_chest_top.png", "default_chest_top.png", "default_chest_side.png",
-		"default_chest_side.png", "default_chest_side.png", "default_chest_lock.png"},
-	paramtype2 = "facedir",
-	metadata_name = "locked_chest",
-	material = minetest.digprop_woodlike(1.0),
-	legacy_facedir_simple = true,
-})
-
 minetest.register_node("default:furnace", {
 	description = "Furnace",
 	tile_images = {"default_furnace_side.png", "default_furnace_side.png", "default_furnace_side.png",
@@ -1522,23 +1485,6 @@ minetest.register_node("default:steelblock", {
 	tile_images = {"default_steel_block.png"},
 	is_ground_content = true,
 	material = minetest.digprop_stonelike(5.0),
-})
-
-minetest.register_node("default:nyancat", {
-	description = "Nyancat",
-	tile_images = {"default_nc_side.png", "default_nc_side.png", "default_nc_side.png",
-		"default_nc_side.png", "default_nc_back.png", "default_nc_front.png"},
-	inventory_image = "default_nc_front.png",
-	paramtype2 = "facedir",
-	material = minetest.digprop_stonelike(3.0),
-	legacy_facedir_simple = true,
-})
-
-minetest.register_node("default:nyancat_rainbow", {
-	description = "Nyancat Rainbow",
-	tile_images = {"default_nc_rb.png"},
-	inventory_image = "default_nc_rb.png",
-	material = minetest.digprop_stonelike(3.0),
 })
 
 minetest.register_node("default:sapling", {
@@ -1609,11 +1555,6 @@ minetest.register_craftitem("default:clay_brick", {
 	description = "Clay brick",
 	inventory_image = "default_steel_ingot.png",
 	inventory_image = "default_clay_brick.png",
-})
-
-minetest.register_craftitem("default:scorched_stuff", {
-	description = "Scorched stuff",
-	inventory_image = "default_scorched_stuff.png",
 })
 
 --
@@ -1857,39 +1798,8 @@ minetest.register_node("default:m13", {
 	is_ground_content = true,
 	material = minetest.digprop_stonelike(1.00),
 })
----crafting---
-minetest.register_craft({
-	output = 'default:m13',
-	recipe = {
-		{'default:mese'},
-		{'default:mese'},
-	}
-})
-
-minetest.register_craft({
-	output = 'default:m13_pick',
-	recipe = {
-		{'default:m13', 'default:m13', 'default:m13'},
-		{'', 'default:stick', ''},
-		{'', 'default:stick', ''},
-	}
-})
 
 ---tools---
-
-minetest.register_tool("default:m13_pick", {
-	image = "m13_pick.png",
-	basetime = 0,
-	dt_weight = 0,
-	dt_crackiness = 0,
-	dt_crumbliness = 0,
-	dt_cuttability = 0,
-	basedurability = 3000,
-	dd_weight = 0,
-	dd_crackiness = 0,
-	dd_crumbliness = 0,
-	dd_cuttability = 0,
-})
 
 --Jungle Tree can be Crafted into wood!--
 minetest.register_craft({
@@ -2059,220 +1969,3 @@ minetest.register_node("default:orange", {
 	is_ground_content = true,
 	material = minetest.digprop_woodlike(0.25),
 })
-
--- bucket (Minetest 0.4 mod)
-
-minetest.register_alias("bucket", "default:bucket_empty")
-minetest.register_alias("bucket_water", "default:bucket_water")
-minetest.register_alias("bucket_lava", "default:bucket_lava")
-
-minetest.register_craft({
-	output = 'default:bucket_empty 1',
-	recipe = {
-		{'default:steel_ingot', '', 'default:steel_ingot'},
-		{'', 'default:steel_ingot', ''},
-	}
-})
-
-bucket = {}
-bucket.liquids = {}
-
--- Register a new liquid
---   source = name of the source node
---   flowing = name of the flowing node
---   itemname = name of the new bucket item (or nil if liquid is not takeable)
---   inventory_image = texture of the new bucket item (ignored if itemname == nil)
--- This function can be called from any mod (that depends on bucket).
-function bucket.register_liquid(source, flowing, itemname, inventory_image)
-	bucket.liquids[source] = {
-		source = source,
-		flowing = flowing,
-		itemname = itemname,
-	}
-	bucket.liquids[flowing] = bucket.liquids[source]
-
-	if itemname ~= nil then
-		minetest.register_craftitem(itemname, {
-			inventory_image = inventory_image,
-			stack_max = 1,
-			liquids_pointable = true,
-			on_use = function(itemstack, user, pointed_thing)
-				-- Must be pointing to node
-				if pointed_thing.type ~= "node" then
-					return
-				end
-				-- Check if pointing to a liquid
-				n = minetest.env:get_node(pointed_thing.under)
-				if bucket.liquids[n.name] == nil then
-					-- Not a liquid
-					minetest.env:add_node(pointed_thing.above, {name=source})
-				elseif n.name ~= source then
-					-- It's a liquid
-					minetest.env:add_node(pointed_thing.under, {name=source})
-				end
-				return {name="bucket:bucket_empty"}
-			end
-		})
-	end
-end
-
-minetest.register_craftitem("default:bucket_empty", {
-	inventory_image = "bucket.png",
-	stack_max = 1,
-	liquids_pointable = true,
-	on_use = function(itemstack, user, pointed_thing)
-		-- Must be pointing to node
-		if pointed_thing.type ~= "node" then
-			return
-		end
-		-- Check if pointing to a liquid source
-		n = minetest.env:get_node(pointed_thing.under)
-		liquiddef = bucket.liquids[n.name]
-		if liquiddef ~= nil and liquiddef.source == n.name and liquiddef.itemname ~= nil then
-			minetest.env:add_node(pointed_thing.under, {name="air"})
-			return {name=liquiddef.itemname}
-		end
-	end,
-})
-
-bucket.register_liquid(
-	"default:water_source",
-	"default:water_flowing",
-	"default:bucket_water",
-	"bucket_water.png"
-)
-
-bucket.register_liquid(
-	"default:lava_source",
-	"default:lava_flowing",
-	"default:bucket_lava",
-	"bucket_lava.png"
-)
-
-minetest.register_craft({
-	type = "fuel",
-	recipe = "default:bucket_lava",
-	burntime = 60,
-})
-
---Ropes--
-
-minetest.register_on_placenode(function(pos, newnode, placer)
-	if newnode.name == "default:rope" then
-	    place_rope(pos, newnode, placer)
-	end
-    end
-)
-
-minetest.register_on_dignode(function(pos, oldnode, digger)
-	if oldnode.name == "default:rope" then
-	    remove_rope(pos, oldnode, digger, true)
-        end
-    end
-)
-
-minetest.register_on_punchnode(function(pos, oldnode, digger)
-	if oldnode.name == "default:rope" then
-	    remove_rope(pos, oldnode, digger, false)
-        end
-    end
-)
-
--- helper function
-inventory_find_item = function (object, name, item)
-    local inventory = object:inventory_get_list(name)
-    for key, value in pairs(inventory) do
-	if value == item then
-	    return key, value
-	end
-    end
-    return nil, nil
-end
-
-place_rope = function (pos, newnode, placer)
-    local inventory = placer:inventory_get_list("main")
-    local witem = placer:get_wielded_itemstring()
-    local windex, witem = inventory_find_item(placer, "main", witem)
-    local param2 = newnode.param2
-    while witem ~= nil and witem:len() ~= 0 do
-	pos.y = pos.y - 1
-	if minetest.env:get_node(pos).name ~= "air" then
-	    break
-	end
-	if minetest.env:add_node(pos, {name="default:rope", param2=param2}) ~= true
-	then
-	    break
-	end
-	witem = stackstring_take_item(witem)
-    end
-    if windex == nil then
-    else
-        inventory[windex] = witem
-	placer:inventory_set_list("main", inventory)
-    end
-end
-
-remove_rope = function(pos, oldnode, digger, completely)
-    local num = 0
-    local below = pos
-    local above = pos
-    if completely == true then
-	above.y = above.y + 1
-	while minetest.env:get_node(above).name == "default:rope" do
-	    minetest.env:remove_node(above)
-	    above.y = above.y + 1
-	    num = num + 1
-	end
-    end
-    below.y = below.y - 1
-    while minetest.env:get_node(below).name == "default:rope" do
-	minetest.env:remove_node(below)
-	below.y = below.y -1
-	num = num + 1
-    end
-    if num ~= 0 then
-        digger:add_to_inventory_later('node "default:rope" ' .. num)
-    end
-    return true
-end
-
-minetest.register_craft({
-    output = 'default:rope 16',
-    recipe = {
-    	{'', 'tree', ''},
-    	{'', 'tree', ''},
-    	{'', 'tree', ''},
-    }
-})
-
-minetest.register_node("default:rope", {
-    drawtype = "signlike",
-    tile_images = {"rope2.png"},
-    inventory_image = "rope2.png",
-    light_propagates = true,
-    paramtype = "light",
-    is_ground_content = true,
-    wall_mounted = true,
-    walkable = false,
-    climbable = true,
-    selection_box = {
-        type = "wallmounted",
-	--wall_top = = <default>
-	--wall_bottom = = <default>
-	--wall_side = = <default>
-    },
-    furnace_burntime = 5,
-    material = {
-	diggablity = "normal",
-	cuttability = 1.5,
-    },
-})
-
---
--- Done, print some random stuff
---
-
---print("minetest.registered_entities:")
---dump2(minetest.registered_entities)
-
--- END
