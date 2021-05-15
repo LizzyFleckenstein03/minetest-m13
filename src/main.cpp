@@ -1,5 +1,5 @@
 /*
-Minetest-m13
+Minetest-c55
 Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
@@ -1480,7 +1480,7 @@ int main(int argc, char *argv[])
 				// (map at least?)
 				smgr->clear();
 				// Reset or hide the debug gui texts
-				/*guitext->setText(L"Minetest-m13");
+				/*guitext->setText(L"Minetest-c55");
 				guitext2->setVisible(false);
 				guitext_info->setVisible(false);
 				guitext_chat->setVisible(false);*/

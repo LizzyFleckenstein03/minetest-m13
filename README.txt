@@ -1,4 +1,4 @@
-Minetest-m13
+Minetest-c55
 ---------------
 An InfiniMiner/Minecraft inspired game.
 Copyright (c) 2010-2011 Perttu Ahola <celeron55@gmail.com>
@@ -93,7 +93,7 @@ Compiling on Windows:
 	* Optional: gettext bibrary and tools:
 		http://gnuwin32.sourceforge.net/downlinks/gettext.php
 		- This is used for other UI languages. Feel free to leave it out.
-	* And, of course, Minetest-m13:
+	* And, of course, Minetest-c55:
 		http://celeron.55.lt/~celeron55/minetest/download
 - Steps:
 	- Select a directory called DIR hereafter in which you will operate.
@@ -195,7 +195,7 @@ cmake %sourcedir% -G "Visual Studio 10" -DIRRLICHT_SOURCE_DIR=%irrlichtpath% -DR
 "C:\WINDOWS\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe" PACKAGE.vcxproj /p:Configuration=Release
 popd
 
-License of Minetest-m13 textures and sounds
+License of Minetest-c55 textures and sounds
 -------------------------------------------
 
 This applies to textures and sounds contained in the main Minetest
@@ -204,10 +204,10 @@ distribution.
 Attribution-ShareAlike 3.0 Unported (CC BY-SA 3.0)                                 
 http://creativecommons.org/licenses/by-sa/3.0/
 
-License of Minetest-m13 source code
+License of Minetest-c55 source code
 -----------------------------------
 
-Minetest-m13
+Minetest-c55
 Copyright (C) 2010-2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 This program is free software; you can redistribute it and/or modify

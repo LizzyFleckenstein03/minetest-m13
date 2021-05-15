@@ -1,0 +1,9 @@
+address = 192.168.0.10
+creative_mode = 0
+enable_3d_clouds = 0
+enable_damage = 1
+name = ubuntu2
+new_style_leaves = 0
+opaque_water = 0
+port = 30000
+smooth_lighting = 1

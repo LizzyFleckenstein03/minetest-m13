@@ -1,5 +1,5 @@
 /*
-Part of Minetest-m13
+Part of Minetest-c55
 Copyright (C) 2011 celeron55, Perttu Ahola <celeron55@gmail.com>
 Copyright (C) 2011 Ciaran Gultnieks <ciaran@ciarang.com>
 

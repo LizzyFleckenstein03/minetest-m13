@@ -1,5 +1,5 @@
 /*
-Minetest-m13
+Minetest-c55
 Copyright (C) 2010 celeron55, Perttu Ahola <celeron55@gmail.com>
 
 This program is free software; you can redistribute it and/or modify
@@ -166,7 +166,7 @@ void GUIPauseMenu::regenerateGui(v2u32 screensize)
 
 		/*wchar_t text[200];
 		swprintf(text, 200,
-				L"Minetest-m13\n"
+				L"Minetest-c55\n"
 				L"by Perttu Ahola\n"
 				L"celeron55@gmail.com\n\n"
 				SWPRINTF_CHARSTRING L"\n"

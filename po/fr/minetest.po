@@ -1,6 +1,6 @@
-# French translations for minetest-m13 package.
+# French translations for minetest-c55 package.
 # Copyright (C) 2011 celeron
-# This file is distributed under the same license as the minetest-m13 package.
+# This file is distributed under the same license as the minetest-c55 package.
 # Cyriaque 'Cisoun' Skrapits <cysoun@gmail.com>, 2011
 #
 msgid ""

@@ -1,6 +1,6 @@
-# German translations for minetest-m13 package.
+# German translations for minetest-c55 package.
 # Copyright (C) 2011 celeron
-# This file is distributed under the same license as the minetest-m13 package.
+# This file is distributed under the same license as the minetest-c55 package.
 # Constantin Wenger <constantin.wenger@googlemail.com>, 2011.
 #
 msgid ""
